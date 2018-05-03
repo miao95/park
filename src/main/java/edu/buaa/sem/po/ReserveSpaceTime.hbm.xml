@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2018-5-2 23:58:40 by Hibernate Tools 4.3.1.Final -->
+<hibernate-mapping>
+    <class name="edu.buaa.sem.po.ReserveSpaceTime" table="reserve_space_time" catalog="park2" optimistic-lock="version">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="parkinglotNumber" type="string">
+            <column name="parkinglot_number" length="50">
+                <comment>&#205;&#163;&#179;&#181;&#179;&#161;&#177;&#224;&#186;&#197;</comment>
+            </column>
+        </property>
+        <property name="startTime" type="timestamp">
+            <column name="start_time" length="19">
+                <comment>&#191;&#170;&#202;&#188;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+        <property name="endTime" type="timestamp">
+            <column name="end_time" length="19">
+                <comment>&#189;&#225;&#202;&#248;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+        <property name="spaceAmount" type="java.lang.Integer">
+            <column name="space_amount" />
+        </property>
+    </class>
+</hibernate-mapping>

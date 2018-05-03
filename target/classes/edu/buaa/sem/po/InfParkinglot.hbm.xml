@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2018-5-3 0:05:02 by Hibernate Tools 4.3.1.Final -->
+<hibernate-mapping>
+    <class name="edu.buaa.sem.po.InfParkinglot" table="inf_parkinglot" catalog="park2" optimistic-lock="version">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="number" type="string">
+            <column name="number" length="50" />
+        </property>
+        <property name="name" type="string">
+            <column name="name" length="50">
+                <comment>&#205;&#163;&#179;&#181;&#179;&#161;&#195;&#251;&#179;&#198;</comment>
+            </column>
+        </property>
+        <property name="address" type="string">
+            <column name="address" length="100">
+                <comment>&#181;&#216;&#214;&#183;</comment>
+            </column>
+        </property>
+        <property name="classification" type="string">
+            <column name="classification">
+                <comment>&#205;&#163;&#179;&#181;&#179;&#161;&#183;&#214;&#192;&#224;</comment>
+            </column>
+        </property>
+        <property name="spaceTotalAmount" type="java.lang.Integer">
+            <column name="space_total_amount" />
+        </property>
+        <property name="spaceReserveAmount" type="java.lang.Integer">
+            <column name="space_reserve_amount" />
+        </property>
+        <property name="account" type="string">
+            <column name="account">
+                <comment>&#199;&#174;&#176;&#252;&#181;&#216;&#214;&#183;</comment>
+            </column>
+        </property>
+        <property name="key" type="string">
+            <column name="key">
+                <comment>&#205;&#163;&#179;&#181;&#179;&#161;&#199;&#174;&#176;&#252;&#203;&#189;&#212;&#191;</comment>
+            </column>
+        </property>
+        <property name="description" type="string">
+            <column name="description">
+                <comment>&#177;&#184;&#215;&#162;</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

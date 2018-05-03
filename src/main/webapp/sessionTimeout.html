@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>网页过期</title>
+</head>
+<body>
+	<p align="center">
+		对不起，网页过期。<span id="time">5</span> 秒后自动回到 <a href="./admin/fast" target="_top">登录页</a>
+	</p>
+	<script type="text/javascript">
+		setInterval("settime()", 1000);
+		var i = 5;
+		function settime() {
+			i--;
+			time.innerHTML = "<font color='red'>" + i + "</font>";
+			if (i <= 0) {
+				if (window.parent) {
+					window.open("./admin/fast", "_parent");
+				} else {
+					window.open("./admin/fast", "_self");
+				}
+			}
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2018-5-2 23:58:40 by Hibernate Tools 4.3.1.Final -->
+<hibernate-mapping>
+    <class name="edu.buaa.sem.po.TraOrder" table="tra_order" catalog="park2" optimistic-lock="version">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="number" type="string">
+            <column name="number" length="50">
+                <comment>&#182;&#169;&#181;&#165;&#177;&#224;&#186;&#197;</comment>
+            </column>
+        </property>
+        <property name="createTime" type="timestamp">
+            <column name="create_time" length="19">
+                <comment>&#181;&#177;&#199;&#176;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+        <property name="reserveBeginPoint" type="timestamp">
+            <column name="reserve_begin_point" length="19">
+                <comment>&#212;&#164;&#182;&#168;&#191;&#170;&#202;&#188;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+        <property name="reserveEndPoint" type="timestamp">
+            <column name="reserve_end_point" length="19">
+                <comment>&#212;&#164;&#182;&#168;&#189;&#225;&#202;&#248;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+        <property name="parkinglotNumber" type="string">
+            <column name="parkinglot_number" length="50">
+                <comment>&#205;&#163;&#179;&#181;&#179;&#161;&#177;&#224;&#194;&#235;</comment>
+            </column>
+        </property>
+        <property name="spaceNumber" type="string">
+            <column name="space_number" length="50">
+                <comment>&#179;&#181;&#206;&#187;&#186;&#197;</comment>
+            </column>
+        </property>
+        <property name="userNumber" type="string">
+            <column name="user_number" length="50">
+                <comment>&#211;&#195;&#187;&#167;&#177;&#224;&#194;&#235;</comment>
+            </column>
+        </property>
+        <property name="carNumber" type="string">
+            <column name="car_number" length="50">
+                <comment>&#179;&#181;&#197;&#198;&#186;&#197;</comment>
+            </column>
+        </property>
+        <property name="state" type="string">
+            <column name="state" length="10">
+                <comment>
+                &#182;&#169;&#181;&#165;&#215;&#180;&#204;&#172;(&#210;&#209;&#212;&#164;&#182;&#168;/&#214;&#167;&#184;&#182;&#179;&#201;&#185;&#166;/&#214;&#167;&#184;&#182;&#202;&#167;&#176;&#220;/&#210;&#209;&#200;&#235;&#179;&#161;/&#210;&#209;&#192;&#235;&#179;&#161;)</comment>
+            </column>
+        </property>
+        <property name="money" type="java.lang.Double">
+            <column name="money" precision="22" scale="0">
+                <comment>&#182;&#169;&#181;&#165;&#189;&#240;&#182;&#238;</comment>
+            </column>
+        </property>
+        <property name="inTime" type="timestamp">
+            <column name="in_time" length="19">
+                <comment>&#200;&#235;&#179;&#161;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+        <property name="outTime" type="timestamp">
+            <column name="out_time" length="19">
+                <comment>&#192;&#235;&#179;&#161;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+        <property name="debt" type="java.lang.Double">
+            <column name="debt" precision="22" scale="0">
+                <comment>&#199;&#183;&#183;&#209;&#189;&#240;&#182;&#238;</comment>
+            </column>
+        </property>
+        <property name="description" type="string">
+            <column name="description">
+                <comment>&#177;&#184;&#215;&#162;</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

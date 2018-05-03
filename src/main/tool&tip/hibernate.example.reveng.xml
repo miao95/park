@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
+
+<hibernate-reverse-engineering>
+	<type-mapping>
+		<sql-type jdbc-type="CHAR" hibernate-type='string'
+			not-null="false">
+		</sql-type>
+		<sql-type jdbc-type="VARCHAR" hibernate-type='string'
+			not-null="false">
+		</sql-type>
+
+		<sql-type jdbc-type="BIGINT" hibernate-type='java.lang.Long'>
+		</sql-type>
+		<sql-type jdbc-type="VARCHAR" hibernate-type="string"></sql-type>
+	</type-mapping>
+	<table-filter match-name="sys_email_model" match-catalog="park2"></table-filter>
+</hibernate-reverse-engineering>

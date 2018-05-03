@@ -1,0 +1,312 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-4.1.xsd  
+   http://www.springframework.org/schema/aop   
+   http://www.springframework.org/schema/aop/spring-aop-4.1.xsd  
+   http://www.springframework.org/schema/tx  
+   http://www.springframework.org/schema/tx/spring-tx-4.1.xsd  
+   http://www.springframework.org/schema/jee  
+   http://www.springframework.org/schema/jee/spring-jee-4.1.xsd  
+   http://www.springframework.org/schema/context  
+   http://www.springframework.org/schema/context/spring-context-4.1.xsd  
+   http://www.springframework.org/schema/util   
+   http://www.springframework.org/schema/util/spring-util-4.1.xsd
+   http://www.springframework.org/schema/security   
+   http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+	<!-- 扫描edu.buaa.sem.*.dao包下所有标注@Repository的DAO组件 -->
+	<context:component-scan base-package="edu.buaa.sem.*.dao" />
+
+	<!-- spring的属性加载器，加载properties文件中的属性 -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:system.properties</value>
+		</property>
+		<property name="fileEncoding" value="utf-8" />
+	</bean>
+
+	<!--<tx:annotation-driven transaction-manager="transactionManager"/> -->
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl" value="jdbc:mysql://${jdbcIP}:3306/park2" />
+		<property name="user" value="${jdbcUser}" />
+		<property name="password" value="${jdbcPassword}" />
+
+		<!-- 连接关闭时默认将所有未提交的操作回滚。默认为false -->
+		<property name="autoCommitOnClose" value="true" />
+		<!-- 连接池中保留的最小连接数 -->
+		<property name="minPoolSize" value="5" />
+		<!-- 连接池中保留的最大连接数。默认为15 -->
+		<property name="maxPoolSize" value="100" />
+		<!-- 初始化时获取的连接数，取值应在minPoolSize与maxPoolSize之间。默认为3 -->
+		<property name="initialPoolSize" value="5" />
+		<!-- 最大空闲时间，超过空闲时间的连接将被丢弃。为0或负数则永不丢弃。默认为0秒 -->
+		<property name="maxIdleTime" value="60" />
+		<!-- 检查所有连接池中空闲连接的周期。默认为0秒 -->
+		<property name="idleConnectionTestPeriod" value="60" />
+		<!-- 当连接池中的连接用完时，C3P0一次性创建新连接的数目。默认为3 -->
+		<property name="acquireIncrement" value="5" />
+		<!-- 定义在从数据库获取新连接失败后重复尝试获取的次数，默认为30 -->
+		<property name="acquireRetryAttempts" value="30" />
+		<!-- 当连接池用完时客户端调用getConnection()后等获取新连接的时间，超时后将抛出SQLException，如设为0则无限待期等待。单位毫秒，默认为0 -->
+		<property name="checkoutTimeout" value="10000" />
+		<!-- <property name="maxStatements" value="10" /> -->
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.format_sql">false</prop>
+				<prop key="hibernate.show_sql">false</prop>
+
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQL5Dialect
+				</prop>
+				<!-- <prop key="hibernate.dialect">edu.buaa.sem.common.SQLServerUnicodeDialect</prop> -->
+				<!-- 让Spring来集中管理Hibernate中的session和sessionfactory -->
+				<prop key="hibernate.current_session_context_class">
+					org.springframework.orm.hibernate4.SpringSessionContext
+				</prop>
+			</props>
+		</property>
+		<property name="mappingDirectoryLocations">
+			<list>
+				<value>classpath:/edu/buaa/sem/po</value>
+			</list>
+		</property>
+	</bean>
+
+	<!--扫描edu.buaa.sem.*.service包下所有标注@Service的服务组件 -->
+	<context:component-scan base-package="edu.buaa.sem.*.service" />
+	<!--扫描edu.buaa.sem.common包下所有标注@Service的服务组件 -->
+	<context:component-scan base-package="edu.buaa.sem.common" />
+	
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager"
+		p:sessionFactory-ref="sessionFactory" />
+
+	<!--使用强大的切点表达式语言轻松定义目标方法 -->
+	<aop:config>
+		<!--通过aop定义事务增强切面 -->
+		<aop:pointcut id="serviceMethod"
+			expression="(execution(* edu.buaa.sem.*.service.*.*(..))) " />
+		<!--引用事务增强 -->
+		<aop:advisor pointcut-ref="serviceMethod" advice-ref="txAdvice" />
+
+	</aop:config>
+
+
+	<!--事务增强 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<!--事务属性定义 -->
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" propagation="REQUIRED" />
+			<tx:method name="find*" read-only="true" propagation="REQUIRED" />
+			<tx:method name="count*" read-only="true" propagation="REQUIRED" />
+			<tx:method name="*Search" read-only="true" propagation="REQUIRED" />
+
+			<tx:method name="*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!--加载Spring辅助类 -->
+	<bean id="springContextUtils" class="edu.buaa.sem.utils.SpringContextUtils" />
+	
+	<!--Spring Security层配置 START -->
+
+	<!-- 不过滤图片等静态资源和某些页面 -->
+	<security:http
+		pattern="^/(bootstrap|css/|images/|img/|jquery|js/|font-awesome-4.7.0/|403|404|500|maxSession|sessionTimeout)(.*?)$"
+		security="none" request-matcher="regex" />
+	<security:http
+		pattern="^(.*?)\.(mp4|xlsx|swf|jpg|png|gif|bmp|css|js|json|zip|rar|gz|pdf|MP4|XLSX|SWF|JPG|PNG|GIF|BMP|CSS|JS|JSON|ZIP|RAR|GZ)$"
+		security="none" request-matcher="regex" />
+
+	<!--设置匹配后台用户url -->
+	<security:http auto-config="true" request-matcher="regex"
+		use-expressions="true" pattern="^/admin/(.*?)$" access-denied-page="/403.html">
+
+		<!-- 登录设置 -->
+		<security:form-login login-processing-url="/admin/j_spring_security_check"
+			login-page="/admin/fast" authentication-failure-handler-ref="adminLoginFailureHandler"
+			authentication-success-handler-ref="adminLoginSuccessHandler" />
+		<!-- 登出设置 -->
+		<security:logout logout-url="/admin/j_spring_security_logout"
+			logout-success-url="/admin/fast" invalidate-session="true"
+			delete-cookies="JSESSIONID" />
+
+		<!-- 会话超时跳转地址 ，防止同一用户多次登录，第二次登录的用户会踢掉第一次登录的用户 -->
+		<security:session-management
+			invalid-session-url="/sessionTimeout.html">
+			<security:concurrency-control
+				max-sessions="1" error-if-maximum-exceeded="false" expired-url="/maxSession.html" />
+		</security:session-management>
+
+		<!-- 增加一个自定义的Filter，放在FILTER_SECURITY_INTERCEPTOR之前， 实现用户、角色、权限、资源的数据库管理 -->
+		<security:custom-filter ref="myFilter"
+			before="FILTER_SECURITY_INTERCEPTOR" />
+
+		<security:remember-me key="springRocks"
+			services-ref="rememberMeServices" />
+		<security:csrf request-matcher-ref="csrfSecurityRequestMatcher" />
+	</security:http>
+
+	<bean id="adminLoginSuccessHandler" class="edu.buaa.sem.common.AdminLoginSuccessHandler">
+		<property name="alwaysUseDefaultTargetUrl" value="false" />
+		<property name="defaultTargetUrl" value="/admin/index" />
+	</bean>
+
+	<bean id="adminLoginFailureHandler" class="edu.buaa.sem.common.AdminLoginFailureHandler">
+	</bean>
+
+	<!-- 定义上下文返回的消息的国际化。 -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename"
+			value="classpath:org/springframework/security/messages_zh_CN" />
+	</bean>
+
+	<!-- 事件监听，自动接收认证事件的信息 -->
+	<bean id="loggerListener"
+		class="org.springframework.security.authentication.event.LoggerListener" />
+
+	<!-- 用户的密码加密或解密 -->
+	<bean id="passwordEncoder"
+		class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+
+	<!-- 用户定义，包含用户权限等信息 -->
+	<bean id="myUserDetailsService" class="edu.buaa.sem.common.MyUserDetailsService" />
+
+	<!-- 设置authentication-manager和别名 -->
+	<security:authentication-manager alias="authenticationManager">
+		<security:authentication-provider
+			user-service-ref="myUserDetailsService">
+			<security:password-encoder ref="passwordEncoder" />
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+	<!-- 访问决策器，决定某个用户具有的角色，是否有权限去访问某个资源 -->
+	<bean id="myAccessDecisionManager" class="edu.buaa.sem.common.MyAccessDecisionManager" />
+
+	<!-- 资源源数据定义，将所有的资源和权限对应关系建立起来，即定义某一资源可以被哪些权限去访问 -->
+	<bean id="mySecurityMetadataSource"
+		class="edu.buaa.sem.common.MyInvocationSecurityMetadataSourceService">
+		<constructor-arg name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- 一个自定义的Filter。此filter中定义了所有的资源访问的权限控制，包括myUserDetail -->
+	<bean id="myFilter" class="edu.buaa.sem.common.MyFilterSecurityInterceptor">
+		<property name="authenticationManager" ref="authenticationManager" />
+		<property name="accessDecisionManager" ref="myAccessDecisionManager" />
+		<property name="securityMetadataSource" ref="mySecurityMetadataSource" />
+	</bean>
+
+	<!-- 记住我功能的参数设置 -->
+	<bean id="rememberMeServices"
+		class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">
+		<property name="userDetailsService" ref="myUserDetailsService" />
+		<property name="key" value="springRocks" />
+		<property name="tokenValiditySeconds" value="604800" />
+		<property name="parameter" value="remember_me" />
+		<property name="cookieName" value="REMEMBER_ME" />
+	</bean>
+
+	<!-- 防止CSRF攻击的RequestMatcher，除排除列表外，全站有效 -->
+	<bean id="csrfSecurityRequestMatcher" class="edu.buaa.sem.common.CsrfRegexRequestMatcher">
+
+		<property name="excludeUrls">
+			<list>
+				<value>^/ueditor1_3_6-utf8-jsp/jsp/imageUp.jsp$</value>
+				<value>^/ueditor1_3_6-utf8-jsp/jsp/fileUp.jsp$</value>
+				<value>^/frontUpdateInfo/uploadFile$</value>
+				<value>^(/admin|)/j_spring_security_logout$</value>
+			</list>
+		</property>
+
+	</bean>
+
+	<!--Spring Security层配置END -->
+
+
+	<!-- 官方邮箱 -->
+	<bean id="officialMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${emailHost}" />
+		<property name="port" value="${emailPort}" />
+		<property name="username" value="${emailOfficialUsername}" />
+		<property name="password" value="${emailOfficialPassword}"></property>
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Mail Configuration start
+	抽象bean，该bean不能被实例化 -->
+	<bean id="basicMailSendService" class="edu.buaa.sem.common.BasicMailSendService"
+		abstract="true">
+		<property name="officialMailSender" ref="officialMailSender" />
+		<property name="mailFrom" value="PARK" />
+	</bean>
+
+	<!-- 继承自基本的邮件发送service层，提供的官方邮件发送的服务
+	该bean可以被实例化 -->
+	<bean id="officialMailSendService" parent="basicMailSendService">
+		<property name="officialMailSender" ref="officialMailSender" />
+		<property name="mailFrom" value="${emailOfficialUsername}" />
+	</bean>
+
+	<bean id="logMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.163.com" />
+		<property name="port" value="25" />
+		<property name="username" value="buaa_a1021@163.com" />
+		<property name="password" value="buaa1021"></property>
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!--定时任务Quartz Configure Start -->
+	<bean id="schedulerFactory"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<!-- <ref bean="clearTempInvoiceDataTrigger" /> -->
+				<!-- <ref bean = "synchronizeDataTrigger"/> -->
+				<!-- <ref bean="updatePlanRelatedTrigger" /> -->
+			</list>
+		</property>
+	</bean>
+
+	<!-- <bean id="updatePlanRelatedJob" class="edu.buaa.sem.schedule.service.UpdatePlanRelatedJob"></bean>
+	<bean id="updatePlanRelatedDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="group" value="updatePlanStatus" />
+		<property name="name" value="更新计划船员以及计划状态详情" />
+		<property name="targetObject" ref="updatePlanRelatedJob" />
+		<property name="targetMethod" value="updatePlanRelatedMain" />
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<bean id="updatePlanRelatedTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="group" value="updatePlanStatus" />
+		<property name="name" value="更新计划船员以及计划状态详情" />
+		<property name="jobDetail" ref="updatePlanRelatedDetail" />
+		<property name="cronExpression" value="0 20 3 * * ?" />
+	</bean> -->
+	<!--定时任务Quartz Configure end -->
+</beans>
+

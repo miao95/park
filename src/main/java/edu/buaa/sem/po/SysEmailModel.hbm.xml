@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2018-5-3 0:28:09 by Hibernate Tools 4.3.1.Final -->
+<hibernate-mapping>
+    <class name="edu.buaa.sem.po.SysEmailModel" table="sys_email_model" catalog="park2" optimistic-lock="version">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="emailModelName" type="string">
+            <column name="email_model_name">
+                <comment>Email&#196;&#191;&#177;&#234;&#181;&#196;&#195;&#251;&#215;&#214;</comment>
+            </column>
+        </property>
+        <property name="emailModelSubject" type="string">
+            <column name="email_model_subject">
+                <comment>&#196;&#163;&#176;&#230;&#181;&#196;&#214;&#247;&#204;&#226;</comment>
+            </column>
+        </property>
+        <property name="emailModelContent" type="string">
+            <column name="email_model_content" length="65535">
+                <comment>&#196;&#163;&#176;&#229;&#190;&#223;&#204;&#229;&#196;&#218;&#200;&#221;</comment>
+            </column>
+        </property>
+        <property name="emailModelTime" type="timestamp">
+            <column name="email_model_time" length="19">
+                <comment>&#196;&#163;&#176;&#230;&#189;&#168;&#193;&#162;&#202;&#177;&#188;&#228;</comment>
+            </column>
+        </property>
+        <property name="emailModelDescription" type="string">
+            <column name="email_model_description">
+                <comment>&#196;&#163;&#176;&#230;&#195;&#232;&#202;&#246;</comment>
+            </column>
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 2018-5-2 23:58:40 by Hibernate Tools 4.3.1.Final -->
+<hibernate-mapping>
+    <class name="edu.buaa.sem.po.TraCreditRecord" table="tra_credit_record" catalog="park2" optimistic-lock="version">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <property name="orderNumber" type="string">
+            <column name="order_number" />
+        </property>
+        <property name="amount" type="java.lang.Integer">
+            <column name="amount" />
+        </property>
+        <property name="reason" type="string">
+            <column name="reason" />
+        </property>
+        <property name="hash" type="string">
+            <column name="hash" />
+        </property>
+        <property name="descripstion" type="string">
+            <column name="descripstion" />
+        </property>
+    </class>
+</hibernate-mapping>
